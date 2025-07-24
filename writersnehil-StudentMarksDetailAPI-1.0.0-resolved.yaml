@@ -1,0 +1,389 @@
+openapi: 3.0.0
+info:
+  title: Student Academic Service - Student Marks Details API
+  description: APIs for managing student marks and subject details.
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/2023MT93011/StudentMarksDetailsService/1.0.0
+  description: SwaggerHub API Auto Mocking
+paths:
+  /studentAcadamics/marks:
+    post:
+      summary: Add student marks
+      operationId: addStudentMarks
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+        example: Bearer token
+      - name: api-key
+        in: header
+        required: true
+        schema:
+          type: string
+        example: test
+      requestBody:
+        description: Request body for adding marks
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddStudentMarksRequest"
+            example:
+              studentId: 1
+              subjectId: 101
+              semester: 2
+              grade: A
+              marks: 85
+        required: true
+      responses:
+        "200":
+          description: Marks added successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StudentMarksDetailsResponse"
+              example:
+                id: 123
+                studentId: 1
+                subjectId: 101
+                semester: 2
+                grade: A
+                marks: 85
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: Failed to add marks due to database connection issues.
+    patch:
+      summary: Update student marks
+      operationId: updateStudentMarks
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+        example: Bearer token
+      - name: api-key
+        in: header
+        required: true
+        schema:
+          type: string
+        example: test
+      requestBody:
+        description: Request body for updating marks
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateStudentMarksRequest"
+            example:
+              id: 123
+              marks: 90
+        required: true
+      responses:
+        "200":
+          description: Marks updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StudentMarksDetailsResponse"
+              example:
+                id: 123
+                studentId: 1
+                subjectId: 101
+                semester: 2
+                grade: A
+                marks: 90
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: Failed to update marks. Record not found or invalid ID.
+  /studentAcadamics/marks/student/{studentId}:
+    get:
+      summary: Get student marks by student ID
+      operationId: getStudentMarksByStudentId
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+        example: Bearer token
+      - name: api-key
+        in: header
+        required: true
+        schema:
+          type: string
+        example: test
+      - name: studentId
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 1
+      responses:
+        "200":
+          description: Marks fetched successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StudentMarksDetailsResponse"
+              example:
+              - id: 123
+                studentId: 1
+                subjectId: 101
+                semester: 2
+                grade: A
+                marks: 85
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: Unable to fetch marks for the given student ID.
+  /studentAcadamics/marks/subject/{subjectId}:
+    get:
+      summary: Get student marks by subject ID
+      operationId: getStudentMarksBySubjectId
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+        example: Bearer token
+      - name: api-key
+        in: header
+        required: true
+        schema:
+          type: string
+        example: test
+      - name: subjectId
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 101
+      responses:
+        "200":
+          description: Marks fetched successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StudentMarksDetailsResponse"
+              example:
+              - id: 123
+                studentId: 1
+                subjectId: 101
+                semester: 2
+                grade: A
+                marks: 85
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: Subject ID not found in the database.
+  /studentAcadamics/marks/average/subject/{subjectId}/{semester}:
+    get:
+      summary: Get average marks for a subject and semester
+      operationId: getAverageMarksBySubject
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+        example: Bearer token
+      - name: api-key
+        in: header
+        required: true
+        schema:
+          type: string
+        example: test
+      - name: subjectId
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 101
+      - name: semester
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 2
+      responses:
+        "200":
+          description: Average marks fetched successfully
+          content:
+            application/json:
+              schema:
+                type: string
+              example: "Average: 88.5"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: Error calculating average marks. Invalid data provided.
+  /studentAcadamics/marks/average/student/{studentId}/{semester}:
+    get:
+      summary: Get average marks for a student and semester
+      operationId: getAverageMarksByStudent
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+        example: Bearer token
+      - name: api-key
+        in: header
+        required: true
+        schema:
+          type: string
+        example: test
+      - name: studentId
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 1
+      - name: semester
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 2
+      responses:
+        "200":
+          description: Average marks fetched successfully
+          content:
+            application/json:
+              schema:
+                type: string
+              example: "Average: 92.0"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: Error calculating average marks. Student ID or semester invalid.
+  /studentAcadamics/marks/{studentId}:
+    delete:
+      summary: Delete marks by student ID
+      operationId: deleteMarksByStudentId
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+        example: Bearer token
+      - name: api-key
+        in: header
+        required: true
+        schema:
+          type: string
+        example: test
+      - name: studentId
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 1
+      responses:
+        "200":
+          description: Marks deleted successfully
+          content:
+            application/json:
+              schema:
+                type: string
+              example: "All Records of Student ID : 1 are deleted!!!"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: Error deleting records. Student ID does not exist.
+components:
+  schemas:
+    AddStudentMarksRequest:
+      type: object
+      properties:
+        studentId:
+          type: integer
+        subjectId:
+          type: integer
+        semester:
+          type: integer
+        grade:
+          type: string
+        marks:
+          type: number
+    UpdateStudentMarksRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+        marks:
+          type: number
+    StudentMarksDetailsResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        studentId:
+          type: integer
+        subjectId:
+          type: integer
+        semester:
+          type: integer
+        grade:
+          type: string
+        marks:
+          type: number
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+  parameters:
+    AuthorizationHeader:
+      name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
+      example: Bearer token
+    ApiKeyHeader:
+      name: api-key
+      in: header
+      required: true
+      schema:
+        type: string
+      example: test
